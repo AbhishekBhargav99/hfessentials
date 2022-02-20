@@ -1,0 +1,15 @@
+{
+  "name": "application-javascript",
+  "version": "1.0.0",
+  "description": "Patient application in javascript",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Abhishek Bhargav",
+  "license": "ISC",
+  "dependencies": {
+    "fabric-ca-client": "^2.2.11",
+    "fabric-network": "^2.2.11"
+  }
+}
