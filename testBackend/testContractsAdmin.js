@@ -85,22 +85,24 @@ const createPatient = async (adminId, hospId) => {
         response.error = "Admin Validation Failed";
         return response;
     } 
+    console.log("----------------In create Patient--------------------");
     let lastId = await lastPatientId(adminId, hospId);
     let newId = 'PID' + (parseInt(lastId.slice(3)) + 1);
-    console.log("lasId : ", lastId);
+    // console.log("lasId : ", lastId);
+    newId = "PID10"
     // console.log("lastId", newId); // -> pidx+1
     let args = {
         patientId : newId,
         firstName : "Abhishek",
         lastName :"Bhargav", 
+        email: "bhargavab720",
         password : "password",
-        age : 20,
+        age : "20",
         phoneNumber : "7889963163",
         emergPhoneNumber : "7889963163",
         address : "Jammu, J&k, India",
         bloodGroup : "A+",
         changedBy : adminId,
-        allergies : "No",
     }
     const data = JSON.stringify(args);
     let argsData = [data];
@@ -119,7 +121,7 @@ const createPatient = async (adminId, hospId) => {
     });
     const registerUserRes = await network.registerUser(userData);
     if (registerUserRes.error) {
-        await network.invoke(networkObj, false, 'AdminContract:deletePatient', newId);
+        await network.invoke(networkObj, false, 'AdminContract:deletePatient', [newId]);
         console.log("New Patient deleted from ledger");
         return false;
     }
@@ -184,9 +186,9 @@ async function main(){
     // await deletePatient('hosp1admin', 1)
     // await queryAllPatient('hosp3admin', 3);
     // await createDoctor('hosp3admin', 3);
-    let res = await getAllDocsByHospId("hosp1admin", 1);
-    console.log(res);
-    // await createPatient("hosp1admin", 1);
+    // let res = await getAllDocsByHospId("hosp1admin", 1);
+    // console.log(res);
+    await createPatient("hosp2admin", 2);
     // await getAdminHospitalId()
     // let res = await validateAdmin('hosp2admin', 3);
     // console.log(res);
