@@ -1,0 +1,40 @@
+[
+    {
+        "firstName": "Rahul",
+        "lastName": "Mehra",
+        "age": "50",
+        "phoneNumber": "9469515437",
+        "email": "rahul946@gmail.com",
+        "emergPhoneNumber": "9469515437",
+        "address": "Pune, Maharashtra",
+        "bloodGroup": "O+",
+        "allergies": "No",
+        "symptoms": "Cholesterol, Total 250 mg/dl",
+        "diagnosis": "Diabetes",
+        "treatment": "Insulin 10 mg everyday",
+        "followUp": "6 Months",
+        "permissionGranted": ["hosp1admin", "hosp2admin"],
+        "changedBy": "initLedger",
+        "password": "ee6affdb08c3ef9c6444816329b56250ae42a2149b3e72136251a7d8340de43b",
+        "newPatient": false
+    },
+    {
+        "firstName": "Abhay",
+        "lastName": "Chauhan",
+        "age": "60",
+        "phoneNumber": "9419123505",
+        "email": "abhay941@gmail.com",
+        "emergPhoneNumber": "9469515437",
+        "address": "Delhi India",
+        "bloodGroup": "B+",
+        "allergies": "No",
+        "symptoms": "Heart Burn, shortness of breath, Acidity",
+        "diagnosis": "Indigestion",
+        "treatment": "Digestive enzyme 10 ml for 10 days",
+        "followUp": "2 Weeks",
+        "permissionGranted": ["hosp1admin", "hosp2admin"],
+        "changedBy": "initLedger",
+        "password": "fd1e5d642da134218f1cc5c260feb3e4042658a35d78c4eb2fe2b2f1c7e7795b",
+        "newPatient": false
+    }
+]
