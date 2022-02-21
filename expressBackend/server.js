@@ -64,7 +64,7 @@ app.post('/login', async(req, res) => {
         let data = JSON.parse(response.toString());
 
         // **** Change to data.newPatient=== true
-        if(data.pwdTemp === false){
+        if(data.newPatient === true){
           return res.status(403).json({"message" : "New Patient should signup first"});
         }
         if(data.password === pWord)
@@ -88,11 +88,6 @@ app.post('/signup', async(req, res) => {
 
 
 app.use('/adminApi', adminRouter);
-
-app.get('/', (req, res) => {
-  res.send('Hello World!')
-})
-
 
 
 app.listen(port, () => {
