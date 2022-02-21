@@ -31,14 +31,14 @@ async function createWallet(){
 }
 
 async function buildCAClientForHospital(hospitalId){
-    const ccp = buildCCPForHosp(hospitalId);
-    const caClient = "";
+    const ccp = await buildCCPForHosp(hospitalId);
+    let caClient = "";
     if (hospitalId === 1) {
-        caClient = buildCAClient(FabricCAServices, ccp, 'ca.hosp1.ehrNet.com');
+        caClient = await buildCAClient(FabricCAServices, ccp, 'ca.hosp1.ehrNet.com');
     } else if (hospitalId === 2) {
-        caClient = buildCAClient(FabricCAServices, ccp, 'ca.hosp2.ehrNet.com');
+        caClient = await buildCAClient(FabricCAServices, ccp, 'ca.hosp2.ehrNet.com');
     } else if (hospitalId === 3) {
-        caClient = buildCAClient(FabricCAServices, ccp, 'ca.hosp3.ehrNet.com');
+        caClient = await buildCAClient(FabricCAServices, ccp, 'ca.hosp3.ehrNet.com');
     }
     return caClient;
 }
@@ -79,7 +79,7 @@ exports.connectToNetwork = async function (userId, hospId = 1) {
 
         const networkObj = {
             contract: contract,
-            // network: network,
+            network: network,
             gateway: gateway,
         };
         console.log('Succesfully connected to the network.');
@@ -113,6 +113,7 @@ exports.invoke = async function (networkObj, isQuery, func, args = '') {
     } catch (error) {
         const response = {};
         response.error = error;
+        console.log(error);
         console.error("#################Failed to submit or evaluate transaction: ###############");
         return response;
     }
@@ -135,7 +136,7 @@ exports.registerUser = async function (attributes) {
 
     try {
         const wallet = await buildWallet(Wallets, walletPath);
-        const caClient = buildCAClientForHospital(hospitalId);
+        const caClient = await buildCAClientForHospital(hospitalId);
 
         if (hospitalId === 1) {
             await registerAndEnrollUser(caClient, wallet, mspOrg1, userId, 'hosp1admin', attributes);
@@ -147,8 +148,8 @@ exports.registerUser = async function (attributes) {
         // console.log("attributes", attributes);
         // console.log("attr", attr);
         console.log(`Successfully registered user: + ${userId}`);
-        // const response = 'Successfully registered user: ' + userId;
-        // return response;
+        const response = 'Successfully registered user: ' + userId;
+        return response;
     } catch (error) {
         console.error(`Failed to register user doc + ${userId} + : ${error}`);
         const response = {};
@@ -161,7 +162,7 @@ exports.registerUser = async function (attributes) {
 
 exports.getAllDoctorsByHospitalId = async function (networkObj, hospitalId) {
     // Get the User from the identity context
-    const users = networkObj.gateway.identityContext.user;
+    const users = await  networkObj.gateway.identityContext.user;
     // console.log("users: ", users);
     // user - User{name : hosp1admin, certificate, }
     let caClient;
@@ -170,11 +171,11 @@ exports.getAllDoctorsByHospitalId = async function (networkObj, hospitalId) {
 
         const ccp = buildCCPForHosp(hospitalId);
         if (hospitalId === 1) {
-            caClient = buildCAClient(FabricCAServices, ccp, 'ca.hosp1.ehrNet.com');
+            caClient = await buildCAClient(FabricCAServices, ccp, 'ca.hosp1.ehrNet.com');
         } else if (hospitalId === 2) {
-            caClient = buildCAClient(FabricCAServices, ccp, 'ca.hosp2.ehrNet.com');
+            caClient = await buildCAClient(FabricCAServices, ccp, 'ca.hosp2.ehrNet.com');
         } else if (hospitalId === 3) {
-            caClient = buildCAClient(FabricCAServices, ccp, 'ca.hosp3.ehrNet.com');
+            caClient = await buildCAClient(FabricCAServices, ccp, 'ca.hosp3.ehrNet.com');
         }
 
         // Use the identity service to get the user enrolled using the respective CA
@@ -244,13 +245,13 @@ exports.validateAdminbyHospitalId = async function (networkObj, hospitalId) {
         const users = networkObj.gateway.identityContext.user;
         if (hospitalId === 1) {
             const ccp = buildCCPHosp1();
-            caClient = buildCAClient(FabricCAServices, ccp, 'ca.hosp1.ehrNet.com');
+            caClient = await buildCAClient(FabricCAServices, ccp, 'ca.hosp1.ehrNet.com');
         } else if (hospitalId === 2) {
             const ccp = buildCCPHosp2();
-            caClient = buildCAClient(FabricCAServices, ccp, 'ca.hosp2.ehrNet.com');
+            caClient = await buildCAClient(FabricCAServices, ccp, 'ca.hosp2.ehrNet.com');
         } else if (hospitalId === 3) {
             const ccp = buildCCPHosp3();
-            caClient = buildCAClient(FabricCAServices, ccp, 'ca.hosp3.ehrNet.com');
+            caClient = await buildCAClient(FabricCAServices, ccp, 'ca.hosp3.ehrNet.com');
         }
 
         const idService = caClient.newIdentityService();

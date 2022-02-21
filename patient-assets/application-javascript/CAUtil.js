@@ -88,7 +88,7 @@ exports.registerAndEnrollUser = async (caClient, wallet, orgMspId, userId, admin
         const lastName = attributes.lastName;
         const role = attributes.role;
         const email = (role === 'doctor') ? attributes.email : '';
-        console.log("Email : ", email);
+        // console.log("Email : ", email);
         const speciality = (role === 'doctor') ? attributes.speciality : '';
 
         // Register the user, enroll the user, and import the new identity into the wallet.
