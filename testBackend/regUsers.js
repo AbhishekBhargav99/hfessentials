@@ -28,16 +28,16 @@ exports.enrollRegisterUser = async function (hospId, userId, attributes) {
         const wallet = await buildWallet(Wallets, walletPath);
         hospId = parseInt(hospId);
         if (hospId === 1) {
-            const ccp = buildCCPHosp1();
-            caClient = buildCAClient(FabricCAServices, ccp, 'ca.hosp1.ehrNet.com');
+            const ccp = await  buildCCPHosp1();
+            caClient = await buildCAClient(FabricCAServices, ccp, 'ca.hosp1.ehrNet.com');
             mspOrg = 'hosp1MSP';  adminId = 'hosp1admin';
         } else if (hospId === 2) {
-            const ccp = buildCCPHosp2();
-            caClient = buildCAClient(FabricCAServices, ccp, 'ca.hosp2.ehrNet.com');
+            const ccp = await buildCCPHosp2();
+            caClient = await buildCAClient(FabricCAServices, ccp, 'ca.hosp2.ehrNet.com');
             mspOrg = 'hosp2MSP';  adminId = 'hosp2admin';
         } else if (hospId === 3) {
-            const ccp = buildCCPHosp3();
-            caClient = buildCAClient(FabricCAServices, ccp, 'ca.hosp3.ehrNet.com');
+            const ccp = await buildCCPHosp3();
+            caClient = await buildCAClient(FabricCAServices, ccp, 'ca.hosp3.ehrNet.com');
             mspOrg = 'hosp3MSP';  adminId = 'hosp3admin';
         }
 

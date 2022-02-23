@@ -16,11 +16,11 @@ async function main() {
 
         await client.setRedisClientData(hospId, admin1, password);
         // build an in memory object with the network configuration (also known as a connection profile)
-        const ccp = buildCCPHosp1();
+        const ccp = await buildCCPHosp1();
 
         // build an instance of the fabric ca services client based on
         // the information in the network configuration
-        const caClient = buildCAClient(FabricCAServices, ccp, 'ca.hosp1.ehrNet.com');
+        const caClient = await buildCAClient(FabricCAServices, ccp, 'ca.hosp1.ehrNet.com');
 
         // setup the wallet to hold the credentials of the application user
         const wallet = await buildWallet(Wallets, walletPath);

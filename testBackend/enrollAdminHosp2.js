@@ -14,8 +14,8 @@ const hospId = 2;
 async function main() {
     try {
         await client.setRedisClientData(hospId, admin2, password)
-        const ccp = buildCCPHosp2();
-        const caClient = buildCAClient(FabricCAServices, ccp, 'ca.hosp2.ehrNet.com');
+        const ccp = await buildCCPHosp2();
+        const caClient = await buildCAClient(FabricCAServices, ccp, 'ca.hosp2.ehrNet.com');
         const wallet = await buildWallet(Wallets, walletPath);
         await enrollAdmin(caClient, wallet, mspHosp2, admin2, password);
 

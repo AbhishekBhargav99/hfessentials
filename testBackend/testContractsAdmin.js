@@ -89,17 +89,16 @@ const createPatient = async (adminId, hospId) => {
     let lastId = await lastPatientId(adminId, hospId);
     let newId = 'PID' + (parseInt(lastId.slice(3)) + 1);
     // console.log("lasId : ", lastId);
-    newId = "PID10"
+    // newId = "PID10"
     // console.log("lastId", newId); // -> pidx+1
     let args = {
         patientId : newId,
         firstName : "Abhishek",
         lastName :"Bhargav", 
-        email: "bhargavab720",
+        email: "bhargavab720@gmail.com",
         password : "password",
         age : "20",
         phoneNumber : "7889963163",
-        emergPhoneNumber : "7889963163",
         address : "Jammu, J&k, India",
         bloodGroup : "A+",
         changedBy : adminId,

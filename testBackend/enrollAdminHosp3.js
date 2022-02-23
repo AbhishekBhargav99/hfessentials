@@ -15,8 +15,8 @@ async function main(){
     try {
         await client.setRedisClientData(hospId, admin3, password);
         
-        const ccp = buildCCPHosp3();
-        const caClient = buildCAClient(FabricCAServices, ccp, 'ca.hosp3.ehrNet.com');
+        const ccp = await buildCCPHosp3();
+        const caClient = await buildCAClient(FabricCAServices, ccp, 'ca.hosp3.ehrNet.com');
         const wallet = await buildWallet(Wallets, walletPath);
         await enrollAdmin(caClient, wallet, mspHosp3, admin3, password);   
         console.log('msg: Successfully enrolled admin user ' + admin3 + ' and imported it into the wallet');
