@@ -169,7 +169,7 @@ exports.getAllDoctorsByHospitalId = async function (networkObj, hospitalId) {
     const result = [];
     try {
 
-        const ccp = buildCCPForHosp(hospitalId);
+        const ccp = await buildCCPForHosp(hospitalId);
         if (hospitalId === 1) {
             caClient = await buildCAClient(FabricCAServices, ccp, 'ca.hosp1.ehrNet.com');
         } else if (hospitalId === 2) {
@@ -230,11 +230,28 @@ exports.getAllDoctorsByHospitalId = async function (networkObj, hospitalId) {
         response.error = error;
         return response;
     }
-    return result.filter(
-        function (result) {
+    // return result.filter(
+    //     function (result) {
+    //         return result.role === 'doctor';
+    //     },
+    // );
+
+    
+    let newArr = result.filter(
+        (result => {
             return result.role === 'doctor';
-        },
-    );
+        })
+        ) .map( (doctor) => {
+            return ({
+                id: doctor.id,
+                firstName: doctor.firstName,
+                lastName : doctor.lastName,
+                speciality: doctor.speciality,
+                email: doctor.email
+            })
+        });
+
+    return newArr;
 };
 
 

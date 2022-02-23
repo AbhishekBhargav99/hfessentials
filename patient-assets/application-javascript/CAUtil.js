@@ -39,9 +39,10 @@ exports.enrollAdmin = async (caClient, wallet, orgMspId, adminUserId, adminUserP
 };
 
 // Create a new CA client for interacting with CA.
-exports.buildCAClient = (FabricCAServices, ccp, caHostName) => {
+exports.buildCAClient = async (FabricCAServices, ccp, caHostName) => {
 
-    const caInfo = ccp.certificateAuthorities[caHostName]; // lookup CA details from config
+    const caInfo = await ccp.certificateAuthorities[caHostName]; // lookup CA details from config
+    // console.log("caInfo :: ", caInfo);
     // "certificateAuthorities": {
     //     "ca.org1.example.com": {
     //         "url": "https://localhost:7054",
