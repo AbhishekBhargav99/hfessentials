@@ -19,33 +19,35 @@ class AdminContract extends PrimaryContract {
     //Create patient in the ledger
     async createPatient(ctx, args) {
         args = JSON.parse(args);
-
-        if (args.password === null || args.password === '') {
-            throw new Error(`Empty or null values should not be passed for password parameter`);
-        }
-
-        let newPatient = await new Patient(args.patientId, args.firstName, args.lastName, args.email, args.password, args.age,
-            args.phoneNumber, args.emergPhoneNumber, args.address, args.bloodGroup, args.changedBy);
-        const exists = await this.patientExists(ctx, newPatient.patientId);
+        const exists = await this.patientExists(ctx, args.patientId);
         if (exists) {
             throw new Error(`The patient ${newPatient.patientId} already exists`);
         }
+
+        let newPatient = await new Patient(args.patientId, args.firstName, args.lastName, args.email, args.password, args.age,
+            args.phoneNumber, args.address, args.bloodGroup, args.changedBy);
+        
         const buffer = Buffer.from(JSON.stringify(newPatient));
         await ctx.stub.putState(newPatient.patientId, buffer);
     }
 
+    // Redundant
     //Read patient details based on patientId 
     async readPatient(ctx, patientId) {
-        let asset = await super.readPatient(ctx, patientId)
+        try{
+            let asset = await super.readPatient(ctx, patientId);
+            asset = ({
+                patientId: patientId,
+                firstName: asset.firstName,
+                lastName: asset.lastName,
+                phoneNumber: asset.phoneNumber,
+                email: asset.email
+            });
+            return asset;
+        } catch(err){
+            throw new err;
+        }
 
-        asset = ({
-            patientId: patientId,
-            firstName: asset.firstName,
-            lastName: asset.lastName,
-            phoneNumber: asset.phoneNumber,
-            email: asset.email
-        });
-        return asset;
     }
 
     //Delete patient from the ledger based on patientId
