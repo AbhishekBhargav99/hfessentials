@@ -4,7 +4,7 @@
         "hospitalId": "1",
         "firstName": "Rajiv",
         "lastName": "Shukla",
-        "speciality": "Neurosurgery",
+        "speciality": "Neurology",
         "email" : "rajiv124@gmail.com"
     },
     {
@@ -24,11 +24,11 @@
         "email" : "amol414@gmail.com"
     },
     {
-        "id": "Doc-4",
+        "id": "Doc-5",
         "hospitalId": "2",
         "firstName": "Henry",
         "lastName": "Kissinger",
-        "speciality": "ENT Specialist",
+        "speciality": "ENT",
         "email" : "henry919@gmail.com"
     }
 ]

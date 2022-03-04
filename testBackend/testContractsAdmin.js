@@ -129,23 +129,24 @@ const createPatient = async (adminId, hospId) => {
 }
 
 let createDoctor = async function (adminId, hospId){
-    let isValidated = await validateAdmin(adminId, hospId);
-    if(!isValidated){
-        let response = {};
-        response.error = "Admin Validation Failed";
-        return response;
-    }
+    // let isValidated = await validateAdmin(adminId, hospId);
+    // if(!isValidated){
+    //     let response = {};
+    //     response.error = "Admin Validation Failed";
+    //     return response;
+    // }
     const userData = JSON.stringify({ 
-        hospitalId: adminId.slice(4, 5), // 1
-        userId: "Doc-5", 
-        role: 'doctor', 
-        firstName: "Anuraag",
-        lastName: "THakur",
-        speciality: "cardio"
+        userId: "Doc-5",
+        hospitalId: "2",
+        firstName: "Henry",
+        lastName: "Kissinger",
+        speciality: "ENT",
+        email : "henry919@gmail.com"
     })
     const networkObj = await network.connectToNetwork(adminId, hospId);
     const registerUserRes = await network.registerUser(userData);
     if(registerUserRes.error){
+        console.log("Error : ", registerUserRes.error);
         console.log("Doctor registration failed");
     }
 } 
@@ -184,10 +185,10 @@ async function main(){
     // }
     // await deletePatient('hosp1admin', 1)
     // await queryAllPatient('hosp3admin', 3);
-    // await createDoctor('hosp3admin', 3);
+    await createDoctor('hosp2admin', 2);
     // let res = await getAllDocsByHospId("hosp1admin", 1);
     // console.log(res);
-    await createPatient("hosp2admin", 2);
+    // await createPatient("hosp2admin", 2);
     // await getAdminHospitalId()
     // let res = await validateAdmin('hosp2admin', 3);
     // console.log(res);

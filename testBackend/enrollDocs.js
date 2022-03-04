@@ -20,7 +20,7 @@ async function enrollPatients() {
                 email: patient.email,
             }
             // console.log(attr);
-            await enrollRegisterUser(hospId, 'PID'+i, JSON.stringify(attr));
+            await enrollRegisterUser(hospId, patient.patientId, JSON.stringify(attr));
         }
         
     } catch (err) {

@@ -46,6 +46,7 @@ exports.setRedisClientData = async function(hospId, username, data){
 }
 
 
+
 // async function main() {
 //     let userName = 'hosp1admin';
 //     let password = 'hosp5ehrNet';
