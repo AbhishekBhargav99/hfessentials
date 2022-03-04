@@ -2,14 +2,13 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 'use strict';
-
-let Patient = require('./Patient.js');
 const AdminContract = require('./admin-contract.js');
 const PrimaryContract = require("./primary-contract.js");
 const { Context } = require('fabric-contract-api');
 
 class DoctorContract extends AdminContract {
 
+    //  Redundant
     //Read patient details based on patientId
     async readPatient(ctx, patientId) {
 
@@ -27,12 +26,17 @@ class DoctorContract extends AdminContract {
             firstName: asset.firstName,
             lastName: asset.lastName,
             age: asset.age,
+            gender: asset.gender,
+            weight: asset.weight,
             bloodGroup: asset.bloodGroup,
+            reasonsForVisit: asset.reasonsForVisit,
             allergies: asset.allergies,
             symptoms: asset.symptoms,
             diagnosis: asset.diagnosis,
             treatment: asset.treatment,
-            followUp: asset.followUp
+            medication: asset.medication,
+            followUp: asset.followUp,
+            notes: asset.notes
         });
         return asset;
     }
@@ -42,12 +46,16 @@ class DoctorContract extends AdminContract {
         args = JSON.parse(args);
         let isDataChanged = false;
         let patientId = args.patientId;
+        let newreasonsForVisit = args.reasonsForVisit;
+        let newAllergies = args.allergies;
         let newSymptoms = args.symptoms;
         let newDiagnosis = args.diagnosis;
         let newTreatment = args.treatment;
+        let newMedication = args.medication;
         let newFollowUp = args.followUp;
-        let newAllergies = args.allergies;
+        let newNotes = args.notes;
         let updatedBy = args.changedBy;
+
 
         
         const patient = await PrimaryContract.prototype.readPatient(ctx, patientId);
@@ -58,6 +66,10 @@ class DoctorContract extends AdminContract {
             throw new Error(`The doctor ${doctorId} does not have permission to patient ${patientId}`);
         }
 
+        if (newreasonsForVisit !== null && newreasonsForVisit !== '' && patient.reasonsForVisit !== newreasonsForVisit) {
+            patient.reasonsForVisit = newreasonsForVisit;
+            isDataChanged = true;
+        }
 
         if (newSymptoms !== null && newSymptoms !== '' && patient.symptoms !== newSymptoms) {
             patient.symptoms = newSymptoms;
@@ -79,8 +91,18 @@ class DoctorContract extends AdminContract {
             isDataChanged = true;
         }
 
+        if(newMedication !== null && newMedication !== '' && patient.medication !== newMedication){
+            patient.medication = newMedication;
+            isDataChanged = true;
+        }
+
         if (newFollowUp !== null && newFollowUp !== '' && patient.followUp !== newFollowUp) {
             patient.followUp = newFollowUp;
+            isDataChanged = true;
+        }
+
+        if (newNotes !== null && newNotes !== '' && patient.notes !== newNotes) {
+            patient.notes = newNotes;
             isDataChanged = true;
         }
 
@@ -92,16 +114,6 @@ class DoctorContract extends AdminContract {
 
         const buffer = Buffer.from(JSON.stringify(patient));
         await ctx.stub.putState(patientId, buffer);
-    }
-
-    //Read patients based on lastname
-    async queryPatientsByLastName(ctx, lastName) {
-        return await super.queryPatientsByLastName(ctx, lastName);
-    }
-
-    //Read patients based on firstName
-    async queryPatientsByFirstName(ctx, firstName) {
-        return await super.queryPatientsByFirstName(ctx, firstName);
     }
 
     //Retrieves patient medical history based on patientId
@@ -117,7 +129,7 @@ class DoctorContract extends AdminContract {
         let resultsIterator = await ctx.stub.getHistoryForKey(patientId);
         let asset = await this.getAllPatientResults(resultsIterator, true);
 
-        return this.fetchLimitedFields(asset, true);
+        return this.fetchLimitedFields(asset, true, patientId);
     }
 
     //Retrieves all patients details
@@ -135,24 +147,41 @@ class DoctorContract extends AdminContract {
         return this.fetchLimitedFields(permissionedAssets);
     }
 
-    fetchLimitedFields = (asset) => {
+    fetchLimitedFields = (asset, medicalHistory = false, pId = '') => {
+        let allRecords = [];
         for (let i = 0; i < asset.length; i++) {
             const obj = asset[i];
             asset[i] = {
-                patientId: obj.Key,
-                firstName: obj.Record.firstName,
-                lastName: obj.Record.lastName,
-                age: obj.Record.age,
-                bloodGroup: obj.Record.bloodGroup,
-                allergies: obj.Record.allergies,
-                symptoms: obj.Record.symptoms,
-                diagnosis: obj.Record.diagnosis,
-                treatment: obj.Record.treatment,
-                followUp: obj.Record.followUp
-            };
+                patientId: obj.Key,   
+            }
+
+            if(!medicalHistory){
+                asset[i].firstName = obj.Record.firstName,
+                asset[i].lastName = obj.Record.lastName,
+                asset[i].age= obj.Record.age,
+                asset[i].gender =  obj.Record.gender,
+                asset[i].weight = obj.Record.weight,
+                asset[i].bloodGroup = obj.Record.bloodGroup
+            }
+            if(medicalHistory && obj.Record.changedBy === pId )
+                continue;
+
+            if(medicalHistory){
+                asset[i].reasonsForVisit =  obj.Record.reasonsForVisit,
+                asset[i].allergies =  obj.Record.allergies,
+                asset[i].symptoms = obj.Record.symptoms,
+                asset[i].diagnosis =  obj.Record.diagnosis,
+                asset[i].treatment = obj.Record.treatment,
+                asset[i].medication = obj.Record.medication,
+                asset[i].followUp = obj.Record.followUp
+                asset[i].notes = obj.Record.notes
+                asset[i].changedBy = obj.Record.changedBy;
+                asset[i].Timestamp = obj.Timestamp;
+            }
+            allRecords.push(asset[i]);
         }
 
-        return asset;
+        return allRecords;
     };
 
 

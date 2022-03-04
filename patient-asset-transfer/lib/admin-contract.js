@@ -25,7 +25,7 @@ class AdminContract extends PrimaryContract {
         }
 
         let newPatient = await new Patient(args.patientId, args.firstName, args.lastName, args.email, args.password, args.age,
-            args.phoneNumber, args.address, args.bloodGroup, args.changedBy);
+            args.phoneNumber, args.gender, args.weight, args.address, args.bloodGroup, args.changedBy);
         
         const buffer = Buffer.from(JSON.stringify(newPatient));
         await ctx.stub.putState(newPatient.patientId, buffer);
@@ -33,22 +33,22 @@ class AdminContract extends PrimaryContract {
 
     // Redundant
     //Read patient details based on patientId 
-    async readPatient(ctx, patientId) {
-        try{
-            let asset = await super.readPatient(ctx, patientId);
-            asset = ({
-                patientId: patientId,
-                firstName: asset.firstName,
-                lastName: asset.lastName,
-                phoneNumber: asset.phoneNumber,
-                email: asset.email
-            });
-            return asset;
-        } catch(err){
-            throw new err;
-        }
+    // async readPatient(ctx, patientId) {
+    //     try{
+    //         let asset = await super.readPatient(ctx, patientId);
+    //         asset = ({
+    //             patientId: patientId,
+    //             firstName: asset.firstName,
+    //             lastName: asset.lastName,
+    //             phoneNumber: asset.phoneNumber,
+    //             email: asset.email
+    //         });
+    //         return asset;
+    //     } catch(err){
+    //         throw new err;
+    //     }
 
-    }
+    // }
 
     //Delete patient from the ledger based on patientId
     async deletePatient(ctx, patientId) {
@@ -87,7 +87,6 @@ class AdminContract extends PrimaryContract {
     async queryAllPatients(ctx) {
         let resultsIterator = await ctx.stub.getStateByRange('', '');
         let asset = await this.getAllPatientResults(resultsIterator, false);
-
         return this.fetchLimitedFields(asset);
     }
 
@@ -99,7 +98,9 @@ class AdminContract extends PrimaryContract {
                 firstName: obj.Record.firstName,
                 lastName: obj.Record.lastName,
                 phoneNumber: obj.Record.phoneNumber,
-                email: obj.Record.email
+                email: obj.Record.email,
+                age: obj.Record.age,
+                address: obj.Record.address,
             };
         }
 

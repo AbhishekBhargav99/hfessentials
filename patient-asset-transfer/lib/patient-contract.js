@@ -23,6 +23,26 @@ class PatientContract extends PrimaryContract {
         await ctx.stub.deleteState(patientId);
     }
 
+    async getPatientPersonelDetails(ctx, patientId){
+        
+        let asset = await this.readPatient(ctx, patientId);
+
+        let patient = {
+            patientId: asset.patientId,
+            firstName: asset.firstName,
+            lastName: asset.lastName,
+            email: asset.email,
+            age: asset.age,
+            phoneNumber: asset.phoneNumber,
+            gender: asset.gender,
+            weight: asset.weight,
+            address: asset.address,
+            bloodGroup: asset.bloodGroup,
+            permissionGranted: asset.permissionGranted
+        }
+        return patient;
+    }
+
     //This function is to update patient personal details. This function should be called by patient.
     async updatePatientPersonalDetails(ctx, args) {
         args = JSON.parse(args);
@@ -34,11 +54,12 @@ class PatientContract extends PrimaryContract {
         // let newAge = args.age;
         let updatedBy = args.changedBy;
         let newPhoneNumber = args.phoneNumber;
-        let newEmergPhoneNumber = args.emergPhoneNumber;
+        // let newEmergPhoneNumber = args.emergPhoneNumber;
         let newAddress = args.address;
+        let newWeight = args.weight;
         // let newAllergies = args.allergies;
 
-        const patient = await this.readPatient(ctx, patientId)
+        let patient = await this.readPatient(ctx, patientId)
         // if (newFirstname !== null && newFirstname !== '' && patient.firstName !== newFirstname) {
         //     patient.firstName = newFirstname;
         //     isDataChanged = true;
@@ -63,10 +84,10 @@ class PatientContract extends PrimaryContract {
             isDataChanged = true;
         }
 
-        if (newEmergPhoneNumber !== null && newEmergPhoneNumber !== '' && patient.emergPhoneNumber !== newEmergPhoneNumber) {
-            patient.emergPhoneNumber = newEmergPhoneNumber;
-            isDataChanged = true;
-        }
+        // if (newEmergPhoneNumber !== null && newEmergPhoneNumber !== '' && patient.emergPhoneNumber !== newEmergPhoneNumber) {
+        //     patient.emergPhoneNumber = newEmergPhoneNumber;
+        //     isDataChanged = true;
+        // }
 
         if (newAddress !== null && newAddress !== '' && patient.address !== newAddress) {
             patient.address = newAddress;
@@ -80,6 +101,11 @@ class PatientContract extends PrimaryContract {
 
         if (newemail !== null && newemail !== '' && patient.email !== newemail) {
             patient.email = newemail;
+            isDataChanged = true;
+        }
+
+        if (newWeight !== null && newWeight !== '' && patient.weight !== newWeight) {
+            patient.weight = newWeight;
             isDataChanged = true;
         }
 
@@ -116,6 +142,7 @@ class PatientContract extends PrimaryContract {
             patient.newPatient = false;
             patient.changedBy = patientId;
         }
+
         const buffer = Buffer.from(JSON.stringify(patient));
         await ctx.stub.putState(patientId, buffer);
     }
@@ -143,35 +170,40 @@ class PatientContract extends PrimaryContract {
         }
         let resultsIterator = await ctx.stub.getHistoryForKey(patientId);
         let asset = await this.getAllPatientResults(resultsIterator, true);
-        return this.fetchLimitedFields(asset, true);
+        return this.fetchLimitedFields(asset, patientId);
     }
     
     // Utitility Function for fetching limited fields
-    fetchLimitedFields = (asset, includeTimeStamp = false) => {
+    fetchLimitedFields = (asset, pId = '') => {
+        let allRecords = [];
         for (let i = 0; i < asset.length; i++) {
             const obj = asset[i];
+            if(obj.Record.changedBy === pId)
+                continue;
             asset[i] = {
                 patientId: obj.Key,
-                firstName: obj.Record.firstName,
-                lastName: obj.Record.lastName,
+                // firstName: obj.Record.firstName,
+                // lastName: obj.Record.lastName,
                 // age: obj.Record.age,
                 // address: obj.Record.address,
                 // phoneNumber: obj.Record.phoneNumber,
                 // emergPhoneNumber: obj.Record.emergPhoneNumber,
-                bloodGroup: obj.Record.bloodGroup,
+                // bloodGroup: obj.Record.bloodGroup,
+                reasonsForVisit: obj.Record.reasonsForVisit,
                 allergies: obj.Record.allergies,
                 symptoms: obj.Record.symptoms,
                 diagnosis: obj.Record.diagnosis,
                 treatment: obj.Record.treatment,
-                followUp: obj.Record.followUp
-            };
-            if (includeTimeStamp) {
-                asset[i].changedBy = obj.Record.changedBy;
-                asset[i].Timestamp = obj.Timestamp;
+                medication: obj.Record.medication,
+                followUp: obj.Record.followUp,
+                notes: obj.Record.notes,
+                changedBy : obj.Record.changedBy,
+                Timestamp : obj.Timestamp
             }
+            allRecords.push(asset[i]);
         }
 
-        return asset;
+        return allRecords;
     };
 
     // Agument will have patientid & docId
@@ -190,6 +222,8 @@ class PatientContract extends PrimaryContract {
         const buffer = Buffer.from(JSON.stringify(patient));
         // Update the ledger with updated permissionGranted
         await ctx.stub.putState(patientId, buffer);
+        let permissionedArray = patient.permissionGranted;
+        return permissionedArray;
     };
 
     
@@ -210,6 +244,8 @@ class PatientContract extends PrimaryContract {
         const buffer = Buffer.from(JSON.stringify(patient));
         // Update the ledger with updated permissionGranted
         await ctx.stub.putState(patientId, buffer);
+        let permissionedArray = patient.permissionGranted;
+        return permissionedArray;
     };  
 }
 

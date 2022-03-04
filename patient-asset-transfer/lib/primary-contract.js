@@ -16,8 +16,7 @@ class PrimaryContract extends Contract{
     async initLedger(ctx) {
         console.info('============= START : Initialize Ledger ===========');
         for (let i = 0; i < initPatients.length; i++) {
-            initPatients[i].docType = 'patient';
-            await ctx.stub.putState('PID' + i, Buffer.from(JSON.stringify(initPatients[i])));
+            await ctx.stub.putState(initPatients[i].patientId , Buffer.from(JSON.stringify(initPatients[i])));
             console.info('Added <--> ', initPatients[i]);
         }
         console.info('============= END : Initialize Ledger ===========');
@@ -45,15 +44,21 @@ class PrimaryContract extends Contract{
             password: asset.password,
             age: asset.age,
             phoneNumber: asset.phoneNumber,
+            gender: asset.gender,
+            weight: asset.weight,
             address: asset.address,
             bloodGroup: asset.bloodGroup,
+            changedBy: asset.changedBy,
+            reasonsForVisit: asset.reasonsForVisit,
             allergies: asset.allergies,
             symptoms: asset.symptoms,
             diagnosis: asset.diagnosis,
             treatment: asset.treatment,
+            medication: asset.medication,
             followUp: asset.followUp,
-            permissionGranted: asset.permissionGranted,
-            newPatient: asset.newPatient
+            notes: asset.notes,
+            newPatient: asset.newPatient,
+            permissionGranted: asset.permissionGranted
         });
         return asset;
     }
@@ -68,35 +73,35 @@ class PrimaryContract extends Contract{
         return JSON.stringify(results);
     }
 
-    async getQueryResultForQueryString1(ctx) {
-        let queryString = {};
-        queryString.selector = {};
-        queryString.selector.docType = 'patient';
-        queryString.selector.firstName = 'Rahul';
-        let qryStr = JSON.stringify(queryString);
-        let resultsIterator = await ctx.stub.getQueryResult(qryStr);
-        console.info("resultInfo", resultsIterator);
-    }
+    // async getQueryResultForQueryString1(ctx) {
+    //     let queryString = {};
+    //     queryString.selector = {};
+    //     queryString.selector.docType = 'patient';
+    //     queryString.selector.firstName = 'Rahul';
+    //     let qryStr = JSON.stringify(queryString);
+    //     let resultsIterator = await ctx.stub.getQueryResult(qryStr);
+    //     console.info("resultInfo", resultsIterator);
+    // }
 
-    async getQueryResultForQueryString2(ctx) {
-        let queryString = {};
-        queryString.selector = {};
-        queryString.selector.docType = 'patient';
-        queryString.selector.firstName = 'Rahul';
-        let qryStr = JSON.stringify(queryString);
-        let resultsIterator = await ctx.stub.getQueryResult(qryStr);
-        let results = await this.getAllPatientResults(resultsIterator, false);
-        let tst = JSON.stringify(results)
-        console.info("tst --- >> ", tst);
-        return  JSON.parse(tst.toString());
-    }
+    // async getQueryResultForQueryString2(ctx) {
+    //     let queryString = {};
+    //     queryString.selector = {};
+    //     queryString.selector.docType = 'patient';
+    //     queryString.selector.firstName = 'Rahul';
+    //     let qryStr = JSON.stringify(queryString);
+    //     let resultsIterator = await ctx.stub.getQueryResult(qryStr);
+    //     let results = await this.getAllPatientResults(resultsIterator, false);
+    //     let tst = JSON.stringify(results)
+    //     console.info("tst --- >> ", tst);
+    //     return  JSON.parse(tst.toString());
+    // }
 
-    async getPatientHistory1(ctx, patientId) {
-        let resultsIterator = await ctx.stub.getHistoryForKey(patientId);
-        let asset = await this.getAllPatientResults(resultsIterator, true);
+    // async getPatientHistory1(ctx, patientId) {
+    //     let resultsIterator = await ctx.stub.getHistoryForKey(patientId);
+    //     let asset = await this.getAllPatientResults(resultsIterator, true);
 
-        return asset;
-    }
+    //     return asset;
+    // }
 
     async getAllPatientResults(iterator, isHistory) {
 
@@ -133,25 +138,25 @@ class PrimaryContract extends Contract{
         }
     }
 
-    async grantAccessToDoctor1(ctx) {
-        let arg = { patientId: "PID0", doctorId: "DOC0"};
-        arg = JSON.stringify(arg);
-        let args = JSON.parse(arg);
-        let patientId = args.patientId;
-        let doctorId = args.doctorId;
+    // async grantAccessToDoctor1(ctx) {
+    //     let arg = { patientId: "PID0", doctorId: "DOC0"};
+    //     arg = JSON.stringify(arg);
+    //     let args = JSON.parse(arg);
+    //     let patientId = args.patientId;
+    //     let doctorId = args.doctorId;
 
-        // Get the patient asset from world state
-        const patient = await this.readPatient(ctx, patientId);
-        // unique doctorIDs in permissionGranted
-        if (!patient.permissionGranted.includes(doctorId)) {
-            patient.permissionGranted.push(doctorId);
-            patient.changedBy = patientId;
-        }
-        const buffer = Buffer.from(JSON.stringify(patient));
-        // Update the ledger with updated permissionGranted
-        await ctx.stub.putState(patientId, buffer);
-        return JSON.stringify(patient);
-    };
+    //     // Get the patient asset from world state
+    //     const patient = await this.readPatient(ctx, patientId);
+    //     // unique doctorIDs in permissionGranted
+    //     if (!patient.permissionGranted.includes(doctorId)) {
+    //         patient.permissionGranted.push(doctorId);
+    //         patient.changedBy = patientId;
+    //     }
+    //     const buffer = Buffer.from(JSON.stringify(patient));
+    //     // Update the ledger with updated permissionGranted
+    //     await ctx.stub.putState(patientId, buffer);
+    //     return JSON.stringify(patient);
+    // };
 
     
 
