@@ -4,6 +4,9 @@ const crypto = require('crypto');
 const app = express()
 const port = 3000
 const adminRouter = require('./routes/adminRoutes');
+const doctorRouter = require('./routes/doctorRoutes');
+const patientRouter = require('./routes/patientRoutes');
+
 const cors = require('cors');
 const client = require('../testBackend/redisUtils/client');
 const network = require('../patient-assets/application-javascript/app');
@@ -88,6 +91,8 @@ app.post('/signup', async(req, res) => {
 
 
 app.use('/adminApi', adminRouter);
+app.use('/doctorApi', doctorRouter);
+app.use('/patientApi', patientRouter);
 
 
 app.listen(port, () => {
