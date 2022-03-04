@@ -124,6 +124,7 @@ exports.invoke = async function (networkObj, isQuery, func, args = '') {
 //  Creates a patient/doctor and adds to the wallet to the given hospitalId
 exports.registerUser = async function (attributes) {
     // console.log("")
+    console.log("attr ;", attributes);
     const attrs = JSON.parse(attributes);
     const hospitalId = parseInt(attrs.hospitalId);
     const userId = attrs.userId;
