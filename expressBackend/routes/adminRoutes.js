@@ -25,7 +25,7 @@ router.get('/allPatients', async (req, res) => {
     const response = await network.invoke(networkObj, true, 'AdminContract:queryAllPatients');
     const parsedResponse = await JSON.parse(response);
     // console.log("type : ", typeof(parsedResponse));
-    console.log(parsedResponse);
+    // console.log(parsedResponse);
     res.status(200).send(parsedResponse);
 })
 

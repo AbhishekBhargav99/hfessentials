@@ -25,7 +25,7 @@ router.get('/details', async(req, res) => {
     const networkObj = await network.connectToNetwork(patientid, hospId);
     const response = await network.invoke(networkObj, true, 'PatientContract:getPatientPersonelDetails', args);
     const parsedRes = JSON.parse(response.toString())
-    console.log(parsedRes);    
+    console.log('pres : ', parsedRes);    
     res.status(200).send(parsedRes);
 })
 
