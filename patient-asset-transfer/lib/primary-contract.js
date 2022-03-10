@@ -17,7 +17,6 @@ class PrimaryContract extends Contract{
         console.info('============= START : Initialize Ledger ===========');
         for (let i = 0; i < initPatients.length; i++) {
             await ctx.stub.putState(initPatients[i].patientId , Buffer.from(JSON.stringify(initPatients[i])));
-            console.info('Added <--> ', initPatients[i]);
         }
         console.info('============= END : Initialize Ledger ===========');
     }

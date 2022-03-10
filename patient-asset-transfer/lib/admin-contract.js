@@ -20,13 +20,12 @@ class AdminContract extends PrimaryContract {
     async createPatient(ctx, args) {
         args = JSON.parse(args);
         const exists = await this.patientExists(ctx, args.patientId);
+        let newPatient = await new Patient(args.patientId, args.firstName, args.lastName, args.email, args.password, args.age,
+            args.phoneNumber, args.gender, args.weight, args.address, args.bloodGroup, args.changedBy);
         if (exists) {
             throw new Error(`The patient ${newPatient.patientId} already exists`);
         }
 
-        let newPatient = await new Patient(args.patientId, args.firstName, args.lastName, args.email, args.password, args.age,
-            args.phoneNumber, args.gender, args.weight, args.address, args.bloodGroup, args.changedBy);
-        
         const buffer = Buffer.from(JSON.stringify(newPatient));
         await ctx.stub.putState(newPatient.patientId, buffer);
     }
